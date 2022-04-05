@@ -29,13 +29,20 @@ export default {
 <style scoped>
 .balls {
   display: flex;
-  padding: .625rem 0;
+  padding: 1rem 0;
   font-size: .8125rem;
-  overflow-x: scroll;
+  scrollbar-width: none; /* firefox */
+  -ms-overflow-style: none; /* IE 10+ */
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.balls::-webkit-scrollbar {
+  display: none; /* Chrome Safari */
 }
 
 .balls-item {
-  width: 20%;
+  width: 18.5%;
   flex-shrink: 0;
   text-align: center;
 }

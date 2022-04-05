@@ -5,19 +5,19 @@
       <img src="@/assets/img/tabbar/home.svg" width="24" v-show="fullPath != '/'" />
       <div>首页</div>
     </router-link>
-    <router-link class="tabs-item" :class="{'active':fullPath == '/Mv' }" to="/Mv">
-      <img src="@/assets/img/tabbar/mv-active.svg" width="24" v-show="fullPath == '/Mv'" />
-      <img src="@/assets/img/tabbar/mv.svg" width="24" v-show="fullPath != '/Mv'" />
+    <router-link class="tabs-item" :class="{'active':fullPath == '/mv' }" to="/mv">
+      <img src="@/assets/img/tabbar/mv-active.svg" width="24" v-show="fullPath == '/mv'" />
+      <img src="@/assets/img/tabbar/mv.svg" width="24" v-show="fullPath != '/mv'" />
       <div>MV</div>
     </router-link>
-    <router-link class="tabs-item" :class="{'active':fullPath == '/Forum' }" to="/Forum">
-      <img src="@/assets/img/tabbar/forum-active.svg" width="24" v-show="fullPath == '/Forum'" />
-      <img src="@/assets/img/tabbar/forum.svg" width="24" v-show="fullPath != '/Forum'" />
+    <router-link class="tabs-item" :class="{'active':fullPath == '/forum' }" to="/forum">
+      <img src="@/assets/img/tabbar/forum-active.svg" width="24" v-show="fullPath == '/forum'" />
+      <img src="@/assets/img/tabbar/forum.svg" width="24" v-show="fullPath != '/forum'" />
       <div>社区</div>
     </router-link>
-    <router-link class="tabs-item" :class="{'active':fullPath == '/User' }" to="/User">
-      <img src="@/assets/img/tabbar/user-active.svg" width="24" v-show="fullPath == '/User'" />
-      <img src="@/assets/img/tabbar/user.svg" width="24" v-show="fullPath != '/User'" />
+    <router-link class="tabs-item" :class="{'active':fullPath == '/user' }" to="/user">
+      <img src="@/assets/img/tabbar/user-active.svg" width="24" v-show="fullPath == '/user'" />
+      <img src="@/assets/img/tabbar/user.svg" width="24" v-show="fullPath != '/user'" />
       <div>我的</div>
     </router-link>
   </div>
