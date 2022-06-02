@@ -104,7 +104,7 @@ export default {
       currentimg[0].style.transition = 'all 1s ease'
       // 滑动超过轮播图宽度的百分之40，则跳转下一张，否则不跳转
       if(moveLength.value > 0 && currenIndex.value !== props.banners.length - 1) {
-        if(moveLength.value > bannerWidth.value * 0.4) {
+        if(moveLength.value > bannerWidth.value * 0.25) {
           currenIndex.value++
           currentimg[0].style.marginLeft = -currenIndex.value * bannerWidth.value + 'px'
         }
@@ -113,7 +113,7 @@ export default {
         }
       }
       else if(moveLength.value < 0 && currenIndex.value !== 0) {
-        if(-moveLength.value > bannerWidth.value * 0.4) {
+        if(-moveLength.value > bannerWidth.value * 0.25) {
           currenIndex.value--
           currentimg[0].style.marginLeft = -currenIndex.value * bannerWidth.value + 'px'
         }

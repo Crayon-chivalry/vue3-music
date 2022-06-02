@@ -5,6 +5,9 @@ export default createStore({
     loginStatus: false
   },
   mutations: {
+    setLoginStatus(state, content) {
+      state.loginStatus = content
+    }
   },
   actions: {
   },

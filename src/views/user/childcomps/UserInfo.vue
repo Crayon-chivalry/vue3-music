@@ -2,12 +2,12 @@
   <div class="info">
     <div class="info-row">
       <div class="info-tx">
-        <img src="https://s1.ax1x.com/2022/04/03/q7T1Vs.png" />
+        <img :src="avatarUrl" />
       </div>
       <div class="info-base">
         <template v-if="loginStatus">
-          <div class="info-name">123</div>
-          <div class="info-level">Lv1</div>
+          <div class="info-name">{{ nickname }}</div>
+          <div class="info-level">Lv{{ level }}</div>
         </template>
         <template v-else>
           <router-link to="login">
@@ -42,6 +42,9 @@
 
 <script>
 import { useStore } from 'vuex'
+import { onMounted, reactive, toRefs } from 'vue'
+
+import { getUserDetail } from '@/network/user'
 
 export default {
   name: '',
@@ -49,9 +52,26 @@ export default {
   setup() {
     const store = useStore()
     const loginStatus = store.state.loginStatus
+    const state = reactive({
+      nickname: "",
+      avatarUrl: "",
+      level: 0
+    })
+
+    onMounted(async () => {
+      if(loginStatus) {
+        let uid = localStorage.getItem('userid')
+        let { data } = await getUserDetail(uid)
+        state.nickname = data.profile.nickname
+        state.level = data.level
+        state.avatarUrl = data.profile.avatarUrl
+        console.log(data)
+      }
+    })
 
     return {
-      loginStatus
+      loginStatus,
+      ...toRefs(state)
     }
   },
 }
@@ -95,7 +115,7 @@ export default {
 .info-name {
   font-size: 24px;
   font-weight: 600;
-  margin-bottom: 4px;
+  margin-bottom: 6px;
 }
 
 .info-level {

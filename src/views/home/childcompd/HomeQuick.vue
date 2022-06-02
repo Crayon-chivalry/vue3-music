@@ -1,26 +1,32 @@
 <template>
   <div class="balls">
-    <div class="balls-item" v-for="item in balls" :key="item.id">
-      <img :src="item.iconUrl" />
-      <div>{{ item.name }}</div>
+    <div class="balls-item" @click="tolink('recommend')">
+      <img src="@/assets/img/quick/recommend.svg" />
+      <div>每日推荐</div>
+    </div>
+    <div class="balls-item" @click="tolink('song-sheet')">
+      <img src="@/assets/img/quick/song-sheet.svg" />
+      <div>歌单</div>
     </div>
   </div>
 </template>
 
 <script>
+import { useRouter } from 'vue-router'
+
 export default {
-  name: '',
+  name: 'Quick',
   components: {},
-  props: {
-    balls: {
-      type: Array,
-      default() {
-        return []
-      }
-    }
-  },
   setup() {
-    return {}
+    const router = useRouter()
+
+    function tolink(path) {
+      router.push(path)
+    }
+
+    return {
+      tolink
+    }
   },
   methods: {}
 }

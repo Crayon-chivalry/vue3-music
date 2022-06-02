@@ -1,5 +1,5 @@
 <template>
-  <div class="home">
+  <div class="home" :class="{'add-padding':musicData.show}">
     <div class="search">
       <div class="search-input">
         <img src="@/assets/img/common/search.svg" width="20" />
@@ -10,29 +10,25 @@
       <swiper class="home-swiper" :banners="banners"/>
     </div>
 
-    <balls :balls="balls" />
+    <home-quick />
 
     <level-scroll title="最新单曲">
-      <level-scroll-item
-        v-for="(item,index) in newSingle" 
-        :key="index" 
-        :image-url="item.uiElement.image.imageUrl"
-        :main-title="item.uiElement.mainTitle.title"
-        :sub-title="item.uiElement.subTitle.title"
-      />
+      <div class="grid-item" v-for="(item,index) in newSingle" :key="index" @click="playMusic(item)">
+        <img :src="item.uiElement.image.imageUrl" />
+        <div class="main-title">{{ item.uiElement.mainTitle.title }}</div>
+        <div class="sub-title">{{ item.uiElement.subTitle.title }}</div>
+      </div>
     </level-scroll>
 
     <level-scroll title="推荐歌单">
-      <level-scroll-item 
-        v-for="(item,index) in songSheet" 
-        :key="index" 
-        :image-url="item.uiElement.image.imageUrl"
-        :main-title="item.uiElement.mainTitle.title"
-        :sub-title="item.uiElement.subTitle.title"
-      />
+      <div class="grid-item" v-for="(item,index) in songSheet" :key="index">
+        <img :src="item.uiElement.image.imageUrl" />
+        <div class="main-title">{{ item.uiElement.mainTitle.title }}</div>
+        <!-- <div class="sub-title" v-if="item.uiElement.subTitle">{{ item.uiElement.subTitle.title }}</div> -->
+      </div>
     </level-scroll>
 
-    <level-scroll title="热门话题">
+    <level-scroll title="热门话题" ele-class="topic-block" :length="topic.length" :swiper="true">
       <div class="topic-block" v-for="(item,index) in topic" :key="index">
         <div class="topic-item" v-for="(item2,index2) in item" :key="index2">
           <img :src="item2.uiElement.mainTitle.titleImgUrl" width="15" />
@@ -44,36 +40,35 @@
     </level-scroll>
 
     <level-scroll title="精选视频">
-      <level-scroll-item 
-        v-for="(item,index) in video" 
-        :key="index" 
-        :image-url="item.userProfile.avatarUrl"
-        :main-title="item.mlogBaseData.originalTitle"
-      />
+      <div class="grid-item" v-for="(item,index) in video" :key="index">
+        <img :src="item.userProfile.avatarUrl" />
+        <div class="main-title">{{ item.mlogBaseData.originalTitle }}</div>
+      </div>
     </level-scroll>
 
-    <tab-bar/>
+    <tab-bar />
   </div>
 </template>
 
 <script>
-import TabBar from '@/components/tabbar/TabBar'
-import Swiper from '@/components/swiper/Swiper'
-import Balls from '@/components/home/Balls'
-import LevelScroll from '@/components/home/LevelScroll'
-import LevelScrollItem from '@/components/home/LevelScrollItem'
+import TabBar from '@/components/common/tabbar/TabBar'
+import Swiper from '@/components/common/swiper/Swiper'
+import HomeQuick from './childcompd/HomeQuick'
+import LevelScroll from '@/components/main/levelscroll/LevelScroll'
 
 import { getBanner, getBalls, getPageData } from '@/network/home.js'
+import { getMusicUrl, getMusicDetails } from '@/network/music.js'
+
 import { onMounted, reactive, toRefs } from 'vue'
+import useMusicFunctio from '@/use/useMusic' 
 
 export default {
-  name: 'Home',
+  name: 'home',
   components: {
     TabBar,
     Swiper,
-    Balls,
+    HomeQuick,
     LevelScroll,
-    LevelScrollItem
   },
   setup() {
     const state = reactive({
@@ -84,10 +79,10 @@ export default {
       video: [],
       topic: []
     })
+    const { setMusicData, musicData } = useMusicFunctio()
 
     // 取出需要的数据
     function blocksTakeout(data) {
-      console.log(data)
       let newSingle = {}
       let songSheet = {}
       let video = {}
@@ -103,7 +98,6 @@ export default {
           topic = item
         }
       })
-      console.log(songSheet)
       newSingle.creatives.forEach(item => {
         if(item.creativeType == 'NEW_SONG_HOMEPAGE') {
           state.newSingle.push(...item.resources)
@@ -124,6 +118,21 @@ export default {
       state.topic.push(state.topic[0])
     }
 
+    // 播放音乐
+   const playMusic = async (item) => {
+      let {data} = await getMusicUrl(item.resourceId)
+      let details = await getMusicDetails(item.resourceId)
+      let picUrl = details.data.songs[0].al.picUrl
+      setMusicData({
+        id: item.resourceId,
+        picUrl: picUrl,
+        name: item.uiElement.mainTitle.title,
+        singer: item.resourceExtInfo.artists[0].name,
+        url: data.data,
+        show: true
+      })
+    }
+
     onMounted(async () => {
       // 轮播图数据
       let {data: {banners}} = await getBanner()
@@ -140,7 +149,9 @@ export default {
     })
 
     return {
-      ...toRefs(state)
+      ...toRefs(state),
+      musicData,
+      playMusic
     }
   },
   methods: {}
@@ -150,6 +161,10 @@ export default {
 <style scoped>
 .home {
   padding-bottom: 50px;
+}
+
+.add-padding {
+  padding-bottom: 94px;
 }
 
 .search {
@@ -175,6 +190,37 @@ export default {
   overflow: hidden;
 }
 
+.grid-item {
+  width: 28%;
+  padding: 0 .3125rem;
+  flex-shrink: 0;
+}
+
+.grid-item img {
+  width: 100%;
+  border-radius: .625rem;
+}
+
+.main-title {
+  font-size: .875rem;
+  color: #333;
+  font-weight: 600;
+  margin: .25rem 0;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+  overflow: hidden;
+}
+
+.sub-title {
+  font-size: 12px;
+  color: gray;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+  overflow: hidden;
+}
+
 .topic-block {
   width: 100%;
   margin-right: -25px;
@@ -185,7 +231,6 @@ export default {
 .topic-block:last-child {
   width: 99%;
 }
-
 
 .topic-item {
   display: flex;

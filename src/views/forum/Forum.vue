@@ -1,12 +1,12 @@
 <template>
   <div>
     社区
-    <TabBar/>
+    <tab-bar/>
   </div>
 </template>
 
 <script>
-import TabBar from '@/components/tabbar/TabBar'
+import TabBar from '@/components/common/tabbar/TabBar'
 
 // import { getTopicList } from '@/network/forum'
 // import { onMounted } from '@vue/runtime-core'

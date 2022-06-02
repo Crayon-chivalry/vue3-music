@@ -1,9 +1,39 @@
 <template>
-  <router-view/>
+  <router-view v-slot="{ Component }">
+    <component :is="Component" />
+  </router-view>
+
+  <player />
 </template>
 
-<style>
-</style>
+<script>
+import { provide } from 'vue'
+import { useStore } from 'vuex'
+
+import Player from '@/components/main/player/Player'
+import Toast from '@/components/common/toast/toast'
+
+export default {
+  name: '',
+  components: {
+    Player,
+  },
+  setup() {
+    provide('Toast', Toast)
+    const store = useStore()
+
+    // 保持登录状态
+    // 暂以 userid 为 已登录
+    const userid = localStorage.getItem('userid')
+    if(userid) {
+      store.commit('setLoginStatus', true)
+    }
+    
+    return {
+    }
+  },
+}
+</script>
 
 <style>
 @import "~@/assets/css/normalize.css";

@@ -1,8 +1,8 @@
 <template>
-  <div class="nav">
-    <div class="nav-left">
+  <div class="nav" :class="{'border-b': border}" :style="{backgroundColor: bgColor}">
+    <div class="nav-left" @click="toLink">
       <slot name="left">
-        <img src="@/assets/img/common/back.svg" @click="toLink" />
+        <img src="@/assets/img/common/back.svg" />
       </slot>
     </div>
     <div class="nav-center">
@@ -31,6 +31,15 @@ export default {
     to: {
       type: String,
       default: ""
+    },
+    border: {
+      type: Boolean,
+      default: true
+    },
+    // 背景颜色
+    bgColor: {
+      type: String,
+      default: "#fff"
     }
   },
   setup(props) {
@@ -62,7 +71,9 @@ export default {
   top: 0;
   left: 0;
   right: 0;
-  background-color: #fff;
+}
+
+.border-b {
   border-bottom: 1px solid rgba(224, 221, 221, .2);
 }
 

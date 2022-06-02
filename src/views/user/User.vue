@@ -11,8 +11,8 @@
 </template>
 
 <script>
-import TabBar from '@/components/tabbar/TabBar'
-import UserInfo from '@/components/user/UserInfo'
+import TabBar from '@/components/common/tabbar/TabBar'
+import UserInfo from './childcomps/UserInfo'
 import DisplayList from '@/components/user/DisplayList'
 
 export default {
