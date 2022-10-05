@@ -15,5 +15,9 @@ npm run serve
 npm run build
 ```
 
+### 接口
+网易云音乐 API:
+https://github.com/Binaryify/NeteaseCloudMusicApi
+
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
