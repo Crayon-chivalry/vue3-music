@@ -1,35 +1,41 @@
 <template>
-  <div>
-    <div class="header-tool">
+  <div class="user">
+    <!-- <div class="header-tool">
       <div><img src="@/assets/img/user/info.svg" /></div>
       <div><img src="@/assets/img/user/more.svg" /></div>
-    </div>
-    <UserInfo />
-    <DisplayList />
+    </div> -->
+    <UserBaseInfo />
+    <UserSongSheet />
     <TabBar />
   </div>
 </template>
 
 <script>
 import TabBar from '@/components/common/tabbar/TabBar'
-import UserInfo from './childcomps/UserInfo'
-import DisplayList from '@/components/user/DisplayList'
+import UserBaseInfo from './childcomps/UserBaseInfo'
+import UserSongSheet from './childcomps/UserSongSheet'
 
 export default {
   name: 'User',
   components: {
     TabBar,
-    UserInfo,
-    DisplayList
+    UserBaseInfo,
+    UserSongSheet
   },
   setup() {
-    return {}
+    return {
+
+    }
   },
   methods: {}
 }
 </script>
 
 <style scoped>
+.user {
+  padding:10px 0 50px;
+}
+
 .header-tool {
   padding: .625rem;
   display: flex;

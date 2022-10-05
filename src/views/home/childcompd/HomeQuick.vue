@@ -8,6 +8,18 @@
       <img src="@/assets/img/quick/song-sheet.svg" />
       <div>歌单</div>
     </div>
+    <div class="balls-item" @click="tolink('ranking-list')">
+      <img src="@/assets/img/quick/ranking-list.svg" />
+      <div>排行榜</div>
+    </div>
+    <div class="balls-item" @click="tolink('album')">
+      <img src="@/assets/img/quick/album.svg" />
+      <div>数字专辑</div>
+    </div>
+    <div class="balls-item" @click="tolink('Singer')">
+      <img src="@/assets/img/quick/singer.svg" />
+      <div>歌手</div>
+    </div>
   </div>
 </template>
 
@@ -35,12 +47,15 @@ export default {
 <style scoped>
 .balls {
   display: flex;
+  justify-content: space-around;
   padding: 1rem 0;
   font-size: .8125rem;
-  scrollbar-width: none; /* firefox */
-  -ms-overflow-style: none; /* IE 10+ */
-  overflow-x: auto;
-  overflow-y: hidden;
+   /* firefox */
+  /* scrollbar-width: none; */
+  /* IE 10+ */
+  /* -ms-overflow-style: none;  */
+  /* overflow-x: auto; */
+  /* overflow-y: hidden; */
 }
 
 .balls::-webkit-scrollbar {

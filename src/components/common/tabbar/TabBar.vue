@@ -11,11 +11,11 @@
         <img src="@/assets/img/tabbar/mv.svg" width="24" v-show="fullPath != '/mv'" />
         <div>MV</div>
       </router-link>
-      <router-link class="tabs-item" :class="{'active':fullPath == '/forum' }" to="/forum">
+      <!-- <router-link class="tabs-item" :class="{'active':fullPath == '/forum' }" to="/forum">
         <img src="@/assets/img/tabbar/forum-active.svg" width="24" v-show="fullPath == '/forum'" />
         <img src="@/assets/img/tabbar/forum.svg" width="24" v-show="fullPath != '/forum'" />
         <div>社区</div>
-      </router-link>
+      </router-link> -->
       <router-link class="tabs-item" :class="{'active':fullPath == '/user' }" to="/user">
         <img src="@/assets/img/tabbar/user-active.svg" width="24" v-show="fullPath == '/user'" />
         <img src="@/assets/img/tabbar/user.svg" width="24" v-show="fullPath != '/user'" />

@@ -1,5 +1,5 @@
 <template>
-  <div class="player" v-show="musicData.show" @click="toDetails">
+  <div class="player" :class="[tabsPlayer ? 'tabs-player' : '']" v-show="musicData.show" @click="toDetails">
     <div class="music">
       <div class="music-img">
         <img :src="musicData.picUrl" width="30" height="30" class="rotate" />
@@ -29,18 +29,29 @@
 import useMusicFunction from '@/use/useMusic'
 import { useRouter } from 'vue-router'
 
+import { ref } from 'vue'
+
 export default {
   name: '',
   components: {},
   setup() {
     const router = useRouter()
     const { playState, musicData, audioRef, play, pause, ended, isShow } = useMusicFunction()
-    console.log(musicData)
+    const tabsPlayer = ref(false)
+    // console.log(musicData)
 
-    // 导航守卫，只有在 tabbar 的页面才显示播放器
+    // 导航守卫
     router.beforeEach((to, from, next) => {
-      let path = to.fullPath
-      if(path == '/' || path == '/mv' || path == '/forum' || path == '/user') {
+      let showPlayer = to.meta.player
+      let path  = to.fullPath
+      // 是否显示播放器
+      if(showPlayer) {
+        // 判断是否为 Tabs 页面 ，是则切换样式
+        if(path == '/' || path == '/mv' || path == '/forum' || path == '/user') {
+          tabsPlayer.value = true
+        } else {
+          tabsPlayer.value = false
+        }
         isShow(true)
       } else {
         isShow(false)
@@ -64,6 +75,7 @@ export default {
       play,
       pause,
       ended,
+      tabsPlayer,
       toDetails
     }
   },
@@ -73,7 +85,7 @@ export default {
 <style scoped>
 .player {
   position: fixed;
-  bottom: 50px;
+  bottom: 0;
   left: 0;
   right: 0;
   width: 100%;
@@ -84,6 +96,11 @@ export default {
   box-sizing: border-box;
   padding: 0 .625rem;
   background-color: #fff;
+  border-top: 1px solid rgba(237, 235, 235, .3);
+}
+
+.tabs-player {
+  bottom: 50px;
 }
 
 .music {

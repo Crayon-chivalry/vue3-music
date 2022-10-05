@@ -1,6 +1,6 @@
 <template>
   <div class="login">
-    <nav-bar title="登录" to="user" />
+    <nav-bar title="登录" to="/" />
     <div class="content">
       <div class="logo">
         <img src="@/assets/img/logo.svg" width="80" />

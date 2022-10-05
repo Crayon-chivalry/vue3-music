@@ -1,15 +1,15 @@
 <template>
-  <div>
+  <div :class="{'add-padding':musicData.show}">
     <nav-bar title="歌单广场" />
-    <tabs :tabs="tabs" v-model:active="tabsIndex" @update:active="getData" class="tabs-block" />
+    <tabs :tabs="tabs" v-model:active="tabsIndex" v-if="tabs.length > 0" @update:active="getData" class="tabs-block" />
     <div class="content">
       <div 
         class="block" 
-        v-for="item in playlists" 
-        :key="item.id" 
+        v-for="(item,index) in playlists" 
+        :key="index + item.id" 
         @click="tolink('song-sheet-details?id=' + item.id)"
       >
-        <img :src="item.coverImgUrl" />
+        <img v-lazy="item.coverImgUrl" />
         <div class="name">{{ item.name }}</div>
       </div>
     </div>
@@ -25,6 +25,8 @@ import { useRouter } from 'vue-router'
 
 import { getPlaylistHot, getTopPlaylist } from '@/network/music'
 
+import useMusicFunctio from '@/use/useMusic' 
+
 export default {
   name: '',
   components: {
@@ -32,6 +34,7 @@ export default {
     Tabs
   },
   setup() {
+    const { musicData } = useMusicFunctio()
     const router = useRouter()
     const state = reactive({
       tabs: [],
@@ -58,7 +61,8 @@ export default {
     return {
       getData,
       tolink,
-      ...toRefs(state)
+      ...toRefs(state),
+      musicData
     }
   },
 }
@@ -66,12 +70,14 @@ export default {
 
 <style scoped>
 .tabs-block {
-  margin-top: 44px;
-  background-color: #fff;
+  position: fixed;
+  top: 44px;
+  left: 0;
+  right: 0;
 }
 
 .content {
-  padding: 10px;
+  padding: 100px 10px 10px;
   display: flex;
   justify-content: space-between;
   flex-wrap: wrap;
@@ -99,5 +105,9 @@ export default {
   -webkit-line-clamp: 2;
   overflow: hidden;
   font-size: 13px;
+}
+
+.add-padding {
+  padding-bottom: 44px;
 }
 </style>

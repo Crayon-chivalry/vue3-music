@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="music-details">
     <div class="header">
       <img src="@/assets/img/music/bottom.svg" @click="back" />
       <div class="header-center">
@@ -25,14 +25,30 @@
         <img src="@/assets/img/music/more.svg" />
       </div>
       <div class="speed">
-        <div>00.13</div>
-        <div class="speed-block"></div>
-        <div>4:21</div>
+        <div>{{ formatDuring(details.currentTime) }}</div>
+        <div class="speed-block">
+          <div 
+            :style="{'width': details.currentTime / details.duration * 100 + '%'}" 
+            class="speed-block-progress" 
+          />
+        </div>
+        <div>{{ formatDuring(details.duration) }}</div>
       </div>
       <div class="row">
         <img src="@/assets/img/music/listloop.svg" />
         <img src="@/assets/img/music/last.svg" />
-        <img src="@/assets/img/music/play.svg" style="width:50px;height:50px" />
+        <img 
+          src="@/assets/img/music/play.svg"
+          style="width:50px;height:50px" 
+          v-if="!playState" 
+          @click="playClick"
+        />
+        <img 
+          src="@/assets/img/music/stop.svg" 
+          style="width:50px;height:50px" 
+          v-if="playState" 
+          @click="pauseClick"
+        />
         <img src="@/assets/img/music/next.svg" />
         <img src="@/assets/img/music/playlist.svg" />
       </div>
@@ -44,43 +60,119 @@
 import { getMusicDetails } from '@/network/music.js'
 
 import { useRouter, useRoute } from 'vue-router'
-import { onMounted, reactive, toRefs } from 'vue'
+import { onMounted, reactive, toRefs, onUnmounted } from 'vue'
+
+import useMusicFunctio from '@/use/useMusic' 
 
 export default {
   name: '',
   components: {},
   setup() {
+    const { audioRef, playState, play, pause } = useMusicFunctio()
     const router = useRouter()
     const route = useRoute()
     const state = reactive({
-      details: {}
+      details: {},
+      time: null
     })
 
     function back() {
       router.back()
     }
 
-    onMounted(async () => {
+    // 处理时间
+    function formatDuring(millisecond) {
+      let minutes = 0
+      let seconds = 0
+      if(millisecond > 60) {
+        minutes = parseInt(millisecond / 60);
+        seconds = parseInt(millisecond % 60);
+      } else {
+        seconds = parseInt(millisecond);
+      }
+      if(minutes < 10) {
+        minutes = '0' + minutes
+      }
+      if(seconds < 10) {
+        seconds = '0' + seconds
+      }
+      return minutes + ":" + seconds;
+    }
+
+    // 播放时长
+    function increaseTime() {
+      state.time = setInterval(() => {
+        if(state.details.currentTime < state.details.duration) {
+          state.details.currentTime++
+        } else {
+          clearInterval(state.time)
+        }
+      }, 1000)
+    }
+
+    // 暂停播放
+    function pauseClick() {
+      clearInterval(state.time)
+      pause()
+    }
+
+    // 继续播放
+    function playClick() {
+      if(state.details.currentTime >= state.details.duration) {
+        state.details.currentTime = 0
+      }
+      clearInterval(state.time)
+      increaseTime()
+      play()
+    }
+
+    // 获取歌曲数据
+    const getdata = async () => {
       let { data } = await getMusicDetails(route.query.id)
       let songs = data.songs[0]
-      console.log(songs)
       state.details = {
         name: songs.al.name,
         singer: songs.ar[0].name,
-        picUrl: songs.al.picUrl
+        picUrl: songs.al.picUrl,
+        // 有延迟
+        currentTime: parseInt(audioRef.value.currentTime),
+        duration: parseInt(audioRef.value.duration)
       }
-      console.log(state)
+      increaseTime()
+    }
+
+    onMounted(() => {
+      getdata()
+    })
+
+    onUnmounted(() => {
+      clearInterval(state.time)
     })
 
     return {
       back,
-      ...toRefs(state)
+      formatDuring,
+      getdata,
+      playState,
+      playClick,
+      pauseClick,
+      ...toRefs(state),
     }
   },
 }
 </script>
 
 <style scoped>
+.music-details {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 99;
+  background-color: #f7f7f7;
+}
+
 .header {
   height: 50px;
   padding: 0 1rem;
@@ -154,9 +246,19 @@ export default {
 }
 
 .speed-block {
+  position: relative;
   flex: 1;
   margin: 0 8px;
   height: 3px;
   background-color: rgba(69, 106, 255, .1);
+}
+
+.speed-block-progress {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  background-color: var(--main-color);
+  transition: width 1s;
 }
 </style>

@@ -8,10 +8,13 @@
   },
   "dependencies": {
     "axios": "^0.26.1",
+    "better-scroll": "^2.3.1",
     "blueimp-md5": "^2.19.0",
     "core-js": "^3.6.5",
     "vue": "^3.0.0",
+    "vue-loading-overlay": "^5.0.3",
     "vue-router": "^4.0.0-0",
+    "vue3-lazy": "^1.0.0-alpha.1",
     "vuex": "^4.0.0-0"
   },
   "devDependencies": {

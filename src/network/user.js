@@ -13,3 +13,10 @@ export function getSubcount() {
     url: `/user/subcount`
   })
 }
+
+// 获取用户歌单
+export function getPlaylist(uid) {
+  return request({
+    url: `/user/playlist?uid=${uid}`
+  })
+}

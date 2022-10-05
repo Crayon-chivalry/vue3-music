@@ -21,7 +21,7 @@
 </template>
 
 <script>
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, onMounted, onUnmounted, onDeactivated } from 'vue'
 
 export default {
   name: '',
@@ -128,6 +128,10 @@ export default {
     })
 
     onUnmounted(() => {
+      clearInterval(playTimer.value)
+    })
+
+    onDeactivated(() => {
       clearInterval(playTimer.value)
     })
 

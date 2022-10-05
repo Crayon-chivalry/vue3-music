@@ -2,7 +2,8 @@
   <div class="info">
     <div class="info-row">
       <div class="info-tx">
-        <img :src="avatarUrl" />
+        <img v-if="!loginStatus" src="@/assets/img/logo.svg" />
+        <img v-else :src="avatarUrl" />
       </div>
       <div class="info-base">
         <template v-if="loginStatus">
@@ -15,11 +16,11 @@
           </router-link>
         </template>
       </div>
-      <div class="info-icon" v-if="loginStatus">
+      <div class="info-icon" v-if="loginStatus" @click="tolink('user-info')">
         <img src="@/assets/img/common/to.svg" />
       </div>
     </div>
-    <div class="info-record">
+    <!-- <div class="info-record">
       <div class="record-item">
         <div class="record-value">100</div>
         <div class="record-label">收藏</div>
@@ -36,12 +37,13 @@
         <div class="record-value">100</div>
         <div class="record-label">最近</div>
       </div>
-    </div>
+    </div> -->
   </div>
 </template>
 
 <script>
 import { useStore } from 'vuex'
+import { useRouter } from 'vue-router'
 import { onMounted, reactive, toRefs } from 'vue'
 
 import { getUserDetail } from '@/network/user'
@@ -50,6 +52,7 @@ export default {
   name: '',
   components: {},
   setup() {
+    const router = useRouter()
     const store = useStore()
     const loginStatus = store.state.loginStatus
     const state = reactive({
@@ -65,13 +68,19 @@ export default {
         state.nickname = data.profile.nickname
         state.level = data.level
         state.avatarUrl = data.profile.avatarUrl
-        console.log(data)
+      } else {
+        router.push('/login')
       }
     })
 
+    function tolink(path) {
+      router.push(path)
+    }
+
     return {
       loginStatus,
-      ...toRefs(state)
+      ...toRefs(state),
+      tolink
     }
   },
 }

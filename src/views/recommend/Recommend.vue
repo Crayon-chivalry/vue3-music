@@ -1,17 +1,23 @@
 <template>
-  <div v-if="list.length > 0">
+  <div v-if="list.length > 0" :class="{'add-padding':musicData.show}">
     <div class="header">
       <img :src="list[0].picUrl" />
       <nav-bar :border="false" bg-color="transparent">
         <template v-slot:left>
-          <img src="@/assets/img/common/back.svg" style="width:30px" />
+          <img src="@/assets/img/common/back2.svg" style="width:30px" />
         </template>
       </nav-bar>
     </div>
 
     <div class="content">
       <div class="list">
-        <div class="item-block" v-for="item in list" :key="item.id">
+        <div 
+          class="item-block"
+          :class="[musicData.id == item.id ? 'item-block-active' : '']"
+          v-for="item in list" 
+          :key="item.id" 
+          @click="playMusic(item)"
+        >
           <img :src="item.picUrl" />
           <div class="item-block-center">
             <div class="item-block-name">{{ item.name }}</div>
@@ -36,14 +42,17 @@ import NavBar from '@/components/common/navbar/NavBar'
 
 import { onMounted, reactive, toRefs } from 'vue'
 
-import { getRecommendNewsong } from '@/network/music'
+import { getRecommendNewsong, getMusicUrl } from '@/network/music'
+
+import useMusicFunctio from '@/use/useMusic' 
 
 export default {
-  name: '',
+  name: 'recommend',
   components: {
     NavBar
   },
   setup() {
+    const { setMusicData, musicData } = useMusicFunctio()
     const state = reactive({
       list: []
     })
@@ -51,11 +60,25 @@ export default {
     onMounted(async () => {
       let { data } = await getRecommendNewsong()
       state.list = data.result
-      console.log(state.list)
     })
 
+    // 播放音乐
+    const playMusic = async (item) => {
+      let { data } = await getMusicUrl(item.id)
+      setMusicData({
+        id: item.id,
+        picUrl: item.picUrl,
+        name: item.name,
+        singer: item.song.album.subType,
+        url: data.data,
+        show: true
+      })
+    }
+
     return {
-      ...toRefs(state)
+      ...toRefs(state),
+      musicData,
+      playMusic
     }
   }
 }
@@ -108,5 +131,17 @@ export default {
 
 .item-block-right img:first-child {
   margin-right: 10px;
+}
+
+.add-padding {
+  padding-bottom: 44px;
+}
+
+.item-block-active {
+  color: var(--main-color) !important;
+}
+
+.item-block-active span {
+  color: var(--main-color) !important;
 }
 </style>

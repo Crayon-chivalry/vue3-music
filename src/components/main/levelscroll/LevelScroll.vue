@@ -140,7 +140,7 @@ export default {
 .content {
   padding: .625rem .3125rem;
   display: flex;
-  align-items: center;
+  /* align-items: center; */
   scrollbar-width: none; /* firefox */
   -ms-overflow-style: none; /* IE 10+ */
   overflow-x: auto;

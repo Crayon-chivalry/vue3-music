@@ -29,3 +29,9 @@ export function getMvDetail(id) {
     url: `/mv/detail?mvid=${id}`
   })
 }
+
+export function getMvUrl(id) {
+  return request({
+    url: `/mv/url?id=${id}`
+  })
+}

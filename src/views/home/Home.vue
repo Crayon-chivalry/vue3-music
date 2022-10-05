@@ -1,6 +1,6 @@
 <template>
   <div class="home" :class="{'add-padding':musicData.show}">
-    <div class="search">
+    <div class="search" @click="tolink('search')">
       <div class="search-input">
         <img src="@/assets/img/common/search.svg" width="20" />
       </div>
@@ -14,15 +14,20 @@
 
     <level-scroll title="最新单曲">
       <div class="grid-item" v-for="(item,index) in newSingle" :key="index" @click="playMusic(item)">
-        <img :src="item.uiElement.image.imageUrl" />
+        <img v-lazy="item.uiElement.image.imageUrl" />
         <div class="main-title">{{ item.uiElement.mainTitle.title }}</div>
         <div class="sub-title">{{ item.uiElement.subTitle.title }}</div>
       </div>
     </level-scroll>
 
     <level-scroll title="推荐歌单">
-      <div class="grid-item" v-for="(item,index) in songSheet" :key="index">
-        <img :src="item.uiElement.image.imageUrl" />
+      <div 
+        class="grid-item" 
+        v-for="(item,index) in songSheet" 
+        :key="index" 
+        @click="tolink('song-sheet-details?id=' + item.resourceId)"
+      >
+        <img v-lazy="item.uiElement.image.imageUrl" />
         <div class="main-title">{{ item.uiElement.mainTitle.title }}</div>
         <!-- <div class="sub-title" v-if="item.uiElement.subTitle">{{ item.uiElement.subTitle.title }}</div> -->
       </div>
@@ -31,7 +36,7 @@
     <level-scroll title="热门话题" ele-class="topic-block" :length="topic.length" :swiper="true">
       <div class="topic-block" v-for="(item,index) in topic" :key="index">
         <div class="topic-item" v-for="(item2,index2) in item" :key="index2">
-          <img :src="item2.uiElement.mainTitle.titleImgUrl" width="15" />
+          <img src="@/assets/img/common/topic.svg" width="15" />
           <div class="topic-label">{{ item2.uiElement.mainTitle.title }}</div>
           <img :src="item2.uiElement.labelUrls" width="15" />
           <div class="topic-subTitle">{{ item2.uiElement.subTitle.title }}</div>
@@ -41,7 +46,7 @@
 
     <level-scroll title="精选视频">
       <div class="grid-item" v-for="(item,index) in video" :key="index">
-        <img :src="item.userProfile.avatarUrl" />
+        <img v-lazy="item.userProfile.avatarUrl" />
         <div class="main-title">{{ item.mlogBaseData.originalTitle }}</div>
       </div>
     </level-scroll>
@@ -60,6 +65,8 @@ import { getBanner, getBalls, getPageData } from '@/network/home.js'
 import { getMusicUrl, getMusicDetails } from '@/network/music.js'
 
 import { onMounted, reactive, toRefs } from 'vue'
+import { useRouter } from 'vue-router'
+
 import useMusicFunctio from '@/use/useMusic' 
 
 export default {
@@ -71,6 +78,7 @@ export default {
     LevelScroll,
   },
   setup() {
+    const router = useRouter()
     const state = reactive({
       banners: [],
       balls: [],
@@ -133,6 +141,10 @@ export default {
       })
     }
 
+    function tolink(path) {
+      router.push(path)
+    }
+
     onMounted(async () => {
       // 轮播图数据
       let {data: {banners}} = await getBanner()
@@ -145,13 +157,13 @@ export default {
       blocks = blocks.data.blocks
       // 取出需要的数据
       blocksTakeout(blocks)
-      console.log(state)
     })
 
     return {
       ...toRefs(state),
       musicData,
-      playMusic
+      playMusic,
+      tolink
     }
   },
   methods: {}

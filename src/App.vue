@@ -1,13 +1,17 @@
 <template>
   <router-view v-slot="{ Component }">
-    <component :is="Component" />
+    <keep-alive>
+      <component :is="Component" v-if="route.meta.keepAlive" :key="route.path" />
+    </keep-alive>
+    <component :is="Component" v-if="!route.meta.keepAlive" />
   </router-view>
 
   <player />
 </template>
 
 <script>
-import { provide } from 'vue'
+import { provide, reactive } from 'vue'
+import { useRoute } from 'vue-router'
 import { useStore } from 'vuex'
 
 import Player from '@/components/main/player/Player'
@@ -21,6 +25,7 @@ export default {
   setup() {
     provide('Toast', Toast)
     const store = useStore()
+    const route = reactive(useRoute())
 
     // 保持登录状态
     // 暂以 userid 为 已登录
@@ -30,6 +35,7 @@ export default {
     }
     
     return {
+      route
     }
   },
 }
